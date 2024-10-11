@@ -3,9 +3,11 @@
 //
 #include <iostream>
 #include <limits>
-#include <vector>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <sstream>
+#include "helpers.h"
 
 void check_guess(int &guess, int &enigma) {
   std::cout << "Enter number:" << std::endl;
@@ -26,21 +28,27 @@ void check_guess(int &guess, int &enigma) {
   }
 }
 
-std::vector<std::string> read_records() {
-  const std::string RECORDS = "records.txt";
-  std::fstream records{RECORDS};
+void get_records_fd(std::ifstream &records) {
 
   if (!records) {
-	std::cout << "Record file not found";
+	std::cout << "Record file not found.";
 	std::ofstream tmp(RECORDS, std::ostream::out);
 	tmp.close();
   }
-  records.open(RECORDS, std::fstream::in | std::fstream::out | std::fstream::app);
-  std::vector<std::string> user_records;
-  while (records) {
-	std::string new_record;
-	std::getline(records, new_record);
-	user_records.push_back(new_record);
+  records.open(RECORDS);
+  if (!records.is_open()) {
+	std::cout << "Cannot open records.txt." << std::endl;
   }
-  return user_records;
+}
+
+void print_last_result(std::ifstream& records, const std::string& username){
+  std::string new_record;
+  while (std::getline(records, new_record)) {
+	if (new_record.find(username) != std::string::npos) {
+	  std::string result(new_record.substr(new_record.find(';') + 1));
+	  std::cout << "Your last result is: " << result << std::endl;
+	  records.close();
+	  break;
+	}
+  }
 }

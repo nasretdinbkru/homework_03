@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <fstream>
 #include "helpers.h"
 
 int main() {
@@ -16,8 +17,14 @@ int main() {
 
   std::srand(std::time(nullptr));
   std::cout << "\"Guess the number game\"" << std::endl;
-  std::vector<std::string> user_records;
-  user_records = read_records();
+
+  std::cout << "Enter your username:" << std::endl;
+  std::string username;
+  std::cin >> username;
+
+  std::ifstream records;
+  get_records_fd(records);
+  print_last_result(records, username);
 
   std::cout << "Created number in range from 1 to 100. Guess it!" << std::endl << std::endl;
 
