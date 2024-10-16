@@ -4,16 +4,15 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
-
-#include <vector>
 #include <string>
 #include <fstream>
 #include "helpers.h"
 
+const std::string records_file = "records.txt";
+
 int main() {
 
   char answer = 0;
-  setlocale(LC_ALL, "Russian");
 
   std::srand(std::time(nullptr));
   std::cout << "\"Guess the number game\"" << std::endl;
@@ -21,10 +20,8 @@ int main() {
   std::cout << "Enter your username:" << std::endl;
   std::string username;
   std::cin >> username;
-
-  std::ifstream records;
-  get_records_fd(records);
-  print_last_result(records, username);
+  std::fstream records_filestream = get_records_file(records_file);
+  records_filestream = print_last_result(records_filestream, username);
 
   std::cout << "Created number in range from 1 to 100. Guess it!" << std::endl << std::endl;
 
@@ -37,11 +34,11 @@ int main() {
 	  check_guess(guess, enigma);
 	} while (enigma!=guess);
 
-	std::cout << "Верно! Загадать еще число? (Y/N)" << std::endl;
+	std::cout << "Excellent! Any more? (Y/N)" << std::endl;
 	std::cout << "& ";
 	std::cin >> answer;
   }
-  std::cout << "До свидания!" << std::endl;
+  std::cout << "Good by!" << std::endl;
 
   return 0;
 }

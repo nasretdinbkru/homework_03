@@ -7,7 +7,46 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <filesystem>
 #include "helpers.h"
+
+std::fstream get_records_file(const std::string &filename) {
+  std::fstream records_{filename, std::fstream::in | std::fstream::out | std::fstream::app};
+  if (!records_.is_open()) {
+	std::cout << "Record file not found. Will be created" << std::endl;
+	std::fstream new_file;
+	new_file.open(filename, std::fstream::in | std::fstream::out | std::fstream::app);
+	return new_file;
+  }
+  return records_;
+}
+
+std::fstream print_last_result(std::fstream &records, const std::string &username) {
+  std::string record;
+  const char *tmp_file_name = "tmp.txt";
+  std::fstream tmp_file(tmp_file_name, std::fstream::out);
+  bool is_familiar = false;
+  while (std::getline(records, record)) {
+	if (record.find(username)!=std::string::npos) {
+	  std::string result(record.substr(record.find(';') + 1));
+	  std::cout << "Your last result is: " << result << std::endl;
+	  is_familiar = true;
+	} else {
+	  if (record!="\n" && !record.empty()) {
+		tmp_file << record << std::endl;
+		tmp_file.flush();
+	  }
+	}
+  }
+  tmp_file.close();
+  if (!is_familiar) {
+	std::cout << "Looks like you're new. Welcome!" << std::endl;
+  }
+  records.close();
+  std::remove(RECORDS);
+  std::filesystem::rename(tmp_file_name, RECORDS);
+  return tmp_file;
+}
 
 void check_guess(int &guess, int &enigma) {
   std::cout << "Enter number:" << std::endl;
@@ -22,33 +61,9 @@ void check_guess(int &guess, int &enigma) {
   }
 
   if (enigma > guess) {
-	std::cout << "Загаданное число больше." << std::endl;
+	std::cout << "My number is greater." << std::endl;
   } else if (enigma < guess) {
-	std::cout << "Загаданное число меньше." << std::endl;
+	std::cout << "My number is less." << std::endl;
   }
 }
 
-void get_records_fd(std::ifstream &records) {
-
-  if (!records) {
-	std::cout << "Record file not found.";
-	std::ofstream tmp(RECORDS, std::ostream::out);
-	tmp.close();
-  }
-  records.open(RECORDS);
-  if (!records.is_open()) {
-	std::cout << "Cannot open records.txt." << std::endl;
-  }
-}
-
-void print_last_result(std::ifstream& records, const std::string& username){
-  std::string new_record;
-  while (std::getline(records, new_record)) {
-	if (new_record.find(username) != std::string::npos) {
-	  std::string result(new_record.substr(new_record.find(';') + 1));
-	  std::cout << "Your last result is: " << result << std::endl;
-	  records.close();
-	  break;
-	}
-  }
-}

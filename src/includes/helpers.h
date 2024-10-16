@@ -4,10 +4,12 @@
 
 #ifndef HOMEWORK_03_SRC_INCLUDES_HELPERS_H_
 #define HOMEWORK_03_SRC_INCLUDES_HELPERS_H_
-const std::string RECORDS = "/home/ray/otus_cpp/otuscpp_nasretdinbkru/homework_03/cmake-build-debug/src/records.txt";
+const char *const RECORDS = "records.txt";
+
+
+std::fstream get_records_file(const std::string &filename);
+std::fstream print_last_result(std::fstream &records, const std::string &username);
 
 void check_guess(int &guess, int &enigma);
-void get_records_fd(std::ifstream& records);
-void print_last_result(std::ifstream& records, const std::string& username);
 
 #endif //HOMEWORK_03_SRC_INCLUDES_HELPERS_H_
