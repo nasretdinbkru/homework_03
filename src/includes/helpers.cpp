@@ -8,6 +8,7 @@
 #include <vector>
 #include <sstream>
 #include <filesystem>
+#include <numeric>
 #include "helpers.h"
 
 std::fstream get_records_file(const std::string &filename) {
@@ -47,7 +48,16 @@ std::fstream print_last_result(std::fstream &records, const std::string &usernam
   std::filesystem::rename(tmp_file_name, RECORDS);
   return tmp_file;
 }
-
+void write_result(std::fstream &records, const std::string &username, const uint8_t result) {
+  records.open(RECORDS, std::fstream::app );
+  if (!records.is_open()) {
+	std::cout << "Cannot open records file." << std::endl;
+	return;
+  }
+  std::string result_s = std::to_string(result);
+  records << username << ";" << result_s << std::endl;
+  records.close();
+}
 void check_guess(int &guess, int &enigma) {
   std::cout << "Enter number:" << std::endl;
   std::cout << "$ ";

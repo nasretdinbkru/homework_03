@@ -13,6 +13,7 @@ const std::string records_file = "records.txt";
 int main() {
 
   char answer = 0;
+  uint8_t attempt_counter = 0;
 
   std::srand(std::time(nullptr));
   std::cout << "\"Guess the number game\"" << std::endl;
@@ -32,8 +33,9 @@ int main() {
 
 	do {
 	  check_guess(guess, enigma);
+	  ++attempt_counter;
 	} while (enigma!=guess);
-
+	write_result(records_filestream, username, attempt_counter);
 	std::cout << "Excellent! Any more? (Y/N)" << std::endl;
 	std::cout << "& ";
 	std::cin >> answer;
